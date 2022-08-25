@@ -1,6 +1,7 @@
 import datetime
 import json
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from rest_framework.response import Response
@@ -111,10 +112,9 @@ class UpdateProduct(CustomSuccessMessageMixin, UpdateView):
         Plan.objects.filter(product=product).update(plan_note=self.request.POST['plan_note'],
                                                     date_merchant=self.request.POST['date_merchant'],
                                                     )
-        Plan.objects.filter(guild=self.request.POST['guild']).update(
-            foreman=self.request.POST['foreman']
-        )
-        print(self.request.POST['guild'])
+
+        Plan.objects.filter(Q(act=None) & Q(guild=self.request.POST['guild'])).update(
+            foreman=self.request.POST['foreman'])
         return super().form_valid(form)
 
 
